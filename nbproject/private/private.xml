@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/GitHub/Sudoku-Game/src/sudoku/game/SudokuGame.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/MainFrame.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/VerificationResult.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/RandomPairs.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Verifier.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/RowChecker.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/DuplicateReport.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/ColumnChecker.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/BoxChecker.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Worker.java</file>
+        </group>
+    </open-files>
 </project-private>

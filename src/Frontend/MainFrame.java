@@ -4,6 +4,18 @@
  */
 package Frontend;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JToggleButton;
+
 /**
  *
  * @author Ayman
@@ -13,8 +25,110 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    class Tile extends JButton {
+
+        int row;
+        int col;
+
+        public Tile(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+    JToggleButton buttonSelected = null;
+
     public MainFrame() {
         initComponents();
+        this.setSize(750, 450);
+        this.setLocationRelativeTo(null);
+        gamePanel.setLayout(new GridLayout(9, 9));
+        gamePanel.setPreferredSize(new Dimension(450, 450));
+        pack();
+        int[][] board = {
+            {5, 3, 0, 0, 7, 0, 0, 0, 0},
+            {6, 0, 0, 1, 9, 5, 0, 0, 0},
+            {0, 9, 8, 0, 0, 0, 0, 6, 0},
+            {8, 0, 0, 0, 6, 0, 0, 0, 3},
+            {4, 0, 0, 8, 0, 3, 0, 0, 1},
+            {7, 0, 0, 0, 2, 0, 0, 0, 6},
+            {0, 6, 0, 0, 0, 0, 2, 8, 0},
+            {0, 0, 0, 4, 1, 9, 0, 0, 5},
+            {0, 0, 0, 0, 8, 0, 0, 7, 9}
+        };
+
+        setupBoard(board);
+        setupKeyPad();
+    }
+
+    void setupBoard(int[][] board) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                Tile tile = new Tile(row, col);
+                if (board[row][col] != 0) {
+                    tile.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                    tile.setText(String.valueOf(board[row][col]));
+                    tile.setBackground(Color.GRAY);
+                } else {
+                    tile.setFont(new Font("Segoe UI", Font.BOLD, 18));
+                    tile.setForeground(Color.BLACK);
+                    tile.setText("");
+                    tile.setBackground(Color.LIGHT_GRAY);
+                    tile.addActionListener(e -> {
+                        if (buttonSelected == null) {
+                            JOptionPane.showMessageDialog(this, "No number selected! please try again.", "Selection warining", JOptionPane.WARNING_MESSAGE);
+
+                        } else {
+                            String number = buttonSelected.getText();
+
+                            tile.setText(number);
+
+                        }
+
+                    });
+                }
+                if ((row == 2 && col == 2) || (row == 2 && col == 5) || (row == 5 && col == 2) || (row == 5 && col == 5)) {
+                    tile.setBorder(BorderFactory.createMatteBorder(1, 1, 4, 4, Color.BLACK));
+                } else if (row == 2 || row == 5) {
+                    tile.setBorder(BorderFactory.createMatteBorder(1, 1, 4, 1, Color.BLACK));
+                } else if (col == 2 || col == 5) {
+                    tile.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 4, Color.BLACK));
+                } else {
+                    tile.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                }
+
+                tile.setFocusable(false);
+                gamePanel.add(tile);
+            }
+        }
+    }
+
+    void setupKeyPad() {
+        keyPadPanel.setLayout(new GridLayout(3, 3, 10, 10));
+        keyPadPanel.setPreferredSize(new Dimension(280, 180));
+        pack();
+        for (int i = 1; i <= 9; i++) {
+            JToggleButton btn = new JToggleButton(String.valueOf(i));
+            btn.setFont(new Font("Segoe UI", Font.BOLD, 18));
+            btn.setFocusable(false);
+            btn.setMargin(new Insets(10, 10, 10, 10));
+            btn.addActionListener(e -> {
+                if (buttonSelected == btn) {
+                    buttonSelected = null;
+                    btn.setSelected(false);
+                }
+                else if (buttonSelected == null){
+                    btn.setSelected(true);
+                    buttonSelected = btn;
+                }
+                else{
+                    buttonSelected.setSelected(false);
+                    btn.setSelected(true);
+                    buttonSelected = btn;
+                }
+
+            });
+            keyPadPanel.add(btn);
+        }
     }
 
     /**
@@ -26,17 +140,85 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        gamePanel = new javax.swing.JPanel();
+        keyPadPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setText("Difficulty: ");
+
+        javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
+        gamePanel.setLayout(gamePanelLayout);
+        gamePanelLayout.setHorizontalGroup(
+            gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 463, Short.MAX_VALUE)
+        );
+        gamePanelLayout.setVerticalGroup(
+            gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 465, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout keyPadPanelLayout = new javax.swing.GroupLayout(keyPadPanel);
+        keyPadPanel.setLayout(keyPadPanelLayout);
+        keyPadPanelLayout.setHorizontalGroup(
+            keyPadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        keyPadPanelLayout.setVerticalGroup(
+            keyPadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        jPanel1.setPreferredSize(new java.awt.Dimension(280, 50));
+        jPanel1.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
+
+        jButton10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton10.setText("Undo");
+        jPanel1.add(jButton10);
+
+        jButton11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton11.setText("Verify");
+        jPanel1.add(jButton11);
+
+        jButton12.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton12.setText("Solve");
+        jPanel1.add(jButton12);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(keyPadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel1))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(keyPadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -46,30 +228,13 @@ public class MainFrame extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+            // Set FlatLaf Dark look and feel
+            FlatDarkLaf.setup();
 
-        /* Create and display the form */
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize FlatLaf");
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new MainFrame().setVisible(true);
@@ -78,5 +243,12 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel gamePanel;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel keyPadPanel;
     // End of variables declaration//GEN-END:variables
 }
