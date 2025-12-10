@@ -4,6 +4,9 @@
  */
 package Frontend;
 
+import Backend.Catalog;
+import Backend.DifficultyEnum;
+import Backend.Game;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
 import java.awt.Component;
@@ -15,6 +18,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
+import Backend.Loader;
+import Backend.SolutionInvalidException;
+import Backend.SudokuController;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -37,24 +46,18 @@ public class MainFrame extends javax.swing.JFrame {
     }
     JToggleButton buttonSelected = null;
 
-    public MainFrame() {
+    public MainFrame() throws FileNotFoundException, SolutionInvalidException {
         initComponents();
         this.setSize(750, 450);
         this.setLocationRelativeTo(null);
         gamePanel.setLayout(new GridLayout(9, 9));
         gamePanel.setPreferredSize(new Dimension(450, 450));
         pack();
-        int[][] board = {
-            {5, 3, 0, 0, 7, 0, 0, 0, 0},
-            {6, 0, 0, 1, 9, 5, 0, 0, 0},
-            {0, 9, 8, 0, 0, 0, 0, 6, 0},
-            {8, 0, 0, 0, 6, 0, 0, 0, 3},
-            {4, 0, 0, 8, 0, 3, 0, 0, 1},
-            {7, 0, 0, 0, 2, 0, 0, 0, 6},
-            {0, 6, 0, 0, 0, 0, 2, 8, 0},
-            {0, 0, 0, 4, 1, 9, 0, 0, 5},
-            {0, 0, 0, 0, 8, 0, 0, 7, 9}
-        };
+        SudokuController sudokuController = new SudokuController();
+        Game source = new Game((new Loader()).load("games/original.csv"));
+        sudokuController.driveGames(source);
+        Catalog catalog = sudokuController.getCatalog();
+        int[][] board = sudokuController.getGame(DifficultyEnum.HARD).getBoard();
 
         setupBoard(board);
         setupKeyPad();
@@ -115,12 +118,10 @@ public class MainFrame extends javax.swing.JFrame {
                 if (buttonSelected == btn) {
                     buttonSelected = null;
                     btn.setSelected(false);
-                }
-                else if (buttonSelected == null){
+                } else if (buttonSelected == null) {
                     btn.setSelected(true);
                     buttonSelected = btn;
-                }
-                else{
+                } else {
                     buttonSelected.setSelected(false);
                     btn.setSelected(true);
                     buttonSelected = btn;
@@ -237,7 +238,13 @@ public class MainFrame extends javax.swing.JFrame {
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                try {
+                    new MainFrame().setVisible(true);
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                } catch (SolutionInvalidException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

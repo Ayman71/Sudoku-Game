@@ -32,6 +32,10 @@ public class BoxChecker extends Worker {
         for (int r = rowStart; r < rowStart + 3; r++) {
             for (int c = colStart; c < colStart + 3; c++) {
                 int value = board[r][c];
+                if (value == 0) { 
+                    pos++;              
+                    continue;            
+                }
                 positions[value].add(pos);
                 pos++;
             }

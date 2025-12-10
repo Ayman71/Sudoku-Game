@@ -16,10 +16,12 @@ public class Catalog {
     boolean current;
     boolean allModesExist;
 
-    public Catalog() {
-        checkGames();
+    public Catalog(boolean current, boolean allModesExist) {
+        this.current = current;
+        this.allModesExist = allModesExist;
     }
 
+    
     public boolean isCurrent() {
         return current;
     }
@@ -28,30 +30,5 @@ public class Catalog {
         return allModesExist;
     }
 
-    void checkGames() {
-        File incompleteDir = new File("incomplete");
-        File[] files = incompleteDir.listFiles(File::isFile);
-
-        if (files != null && files.length > 0) {
-            this.current = true;
-        } else {
-            this.current = false;
-        }
-
-        File gamesDir = new File("games");
-        String[] levels = {"easy", "medium", "hard"};
-        this.allModesExist = true;
-
-        for (String level : levels) {
-            File subfolder = new File(gamesDir, level);
-
-            if (subfolder.exists() && subfolder.isDirectory()) {
-                File[] gameFiles = subfolder.listFiles(File::isFile);
-
-                if (gameFiles == null || gameFiles.length == 0) {
-                    this.allModesExist = false;
-                }
-            }
-        }
-    }
+        
 }

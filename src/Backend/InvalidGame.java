@@ -8,9 +8,6 @@ package Backend;
  *
  * @author Ayman
  */
-public class GameGeneratorVerifier {
-    
-    void generateFromSolved(String solvedGamePath){
-        
-    }
+public class InvalidGame extends Exception {
+    public InvalidGame(String msg) { super(msg); }
 }

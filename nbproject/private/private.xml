@@ -4,7 +4,6 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/GitHub/Sudoku-Game/src/sudoku/game/SudokuGame.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/MainFrame.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/VerificationResult.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/RandomPairs.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Verifier.java</file>
@@ -13,9 +12,21 @@
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/ColumnChecker.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/BoxChecker.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Worker.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameCatalogue.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Catalog.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Loader.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameGeneratorVerifier.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/MainFrame.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameGenerator.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Viewable.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Controllable.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/UserAction.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Game.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/SudokuController.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/StorageManager.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/State.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/DifficultyEnum.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/SolutionInvalidException.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/InvalidGame.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/UndoLog.java</file>
         </group>
     </open-files>
 </project-private>

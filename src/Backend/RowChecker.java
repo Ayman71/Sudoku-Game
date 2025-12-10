@@ -28,6 +28,7 @@ public class RowChecker extends Worker {
 
         for (int col = 0; col < 9; col++) {
             int value = row[col];
+            if (value == 0) continue;
             positions[value].add(col + 1);
         }
 
