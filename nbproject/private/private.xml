@@ -13,6 +13,9 @@
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/ColumnChecker.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/BoxChecker.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Worker.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameCatalogue.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Loader.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameGeneratorVerifier.java</file>
         </group>
     </open-files>
 </project-private>
