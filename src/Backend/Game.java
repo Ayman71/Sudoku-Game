@@ -19,14 +19,4 @@ public class Game {
     public int[][] getBoard() {
         return board;
     }
-
-    public void setCell(int r, int c, int val) {
-        board[r][c] = val;
-    }
-
-    public int getCell(int r, int c) {
-        return board[r][c];
-    }
-
-
 }

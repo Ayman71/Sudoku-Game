@@ -52,12 +52,6 @@ public class SudokuController implements Viewable {
 
     @Override
     public void driveGames(Game source) throws SolutionInvalidException {
-        VerificationResult v = verifier.verify(source.getBoard());
-        if (v.getState() != State.VALID) {
-            throw new SolutionInvalidException("Source invalid or incomplete");
-
-        }
-
         Game easy = generator.generate(source, 10);
         Game medium = generator.generate(source, 20);
         Game hard = generator.generate(source, 25);
@@ -66,6 +60,9 @@ public class SudokuController implements Viewable {
             storage.saveGame(DifficultyEnum.EASY, easy);
             storage.saveGame(DifficultyEnum.MEDIUM, medium);
             storage.saveGame(DifficultyEnum.HARD, hard);
+            storage.saveSourceGame(DifficultyEnum.EASY, easy);
+            storage.saveSourceGame(DifficultyEnum.MEDIUM, medium);
+            storage.saveSourceGame(DifficultyEnum.HARD, hard);
         } catch (Exception e) {
         }
     }

@@ -46,4 +46,7 @@ public class UndoLog {
                 Integer.parseInt(nums[3])
         );
     }
+    public void clearLog() throws IOException{
+        Files.write(logFile, new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
+    }
 }

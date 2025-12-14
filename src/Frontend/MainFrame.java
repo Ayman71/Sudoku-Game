@@ -56,7 +56,7 @@ public class MainFrame extends javax.swing.JFrame {
     SudokuController sudokuController;
     StorageManager storageManager;
 
-    public MainFrame() throws FileNotFoundException, SolutionInvalidException, IOException {
+    public MainFrame(DifficultyEnum difficultyEnum, String sourcePath) throws FileNotFoundException, SolutionInvalidException, IOException {
         initComponents();
         this.setSize(750, 450);
         this.setLocationRelativeTo(null);
@@ -65,17 +65,12 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
         storageManager = new StorageManager("");
         sudokuController = new SudokuController(storageManager);
-
-        Catalog catalog = sudokuController.getCatalog();
         int[][] board;
         int[][] source;
-        if (catalog.hasCurrent()) {
-            board = sudokuController.getGame(DifficultyEnum.INCOMPLETE).getBoard();
-            source = storageManager.loadSource().getBoard();
-        } else {
-            board = sudokuController.getGame(DifficultyEnum.EASY).getBoard();
-            source = board;
-        }
+
+        board = sudokuController.getGame(difficultyEnum).getBoard();
+        source = storageManager.loadSource(difficultyEnum).getBoard();
+
         int editables = 0;
         for (int r = 0; r < 9; r++) {
             for (int c = 0; c < 9; c++) {
@@ -85,18 +80,19 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         }
-        switch (editables) {
-            case 10:
-                difficultyLabel.setText("Difficulty: Easy");
-                break;
-            case 20:
-                difficultyLabel.setText("Difficulty: Medium");
-                break;
-            default:
-                difficultyLabel.setText("Difficulty: Hard");
-                break;
+        if (editables == 10) {
+            difficultyLabel.setText("Difficulty: Easy");
+        } else if (editables == 20) {
+            difficultyLabel.setText("Difficulty: Medium");
+        } else {
+            difficultyLabel.setText("Difficulty: Hard");
         }
         undoLog = new UndoLog("incomplete");
+        if (difficultyEnum != DifficultyEnum.INCOMPLETE) {
+            undoLog.clearLog();
+            storageManager.saveCurrent(board);
+            storageManager.saveNewCurrentSource(board);
+        }
         currentBoard = board;
         setupBoard(board);
         setupKeyPad();
@@ -131,19 +127,20 @@ public class MainFrame extends javax.swing.JFrame {
                         } else {
                             String newNumber = buttonSelected.getText();
                             String oldNumber = tile.getText();
-                            if (oldNumber.equals("")) {
-                                oldNumber = "0";
+                            if (!newNumber.equals(oldNumber)) {
+                                if (oldNumber.equals("")) {
+                                    oldNumber = "0";
+                                }
+                                currentBoard[row][col] = Integer.parseInt(newNumber);
+                                UserAction userAction = new UserAction(row, col, Integer.parseInt(newNumber), Integer.parseInt(oldNumber));
+                                try {
+                                    undoLog.append(userAction);
+                                    storageManager.saveCurrent(currentBoard);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                tile.setText(newNumber);
                             }
-                            currentBoard[row][col] = Integer.parseInt(newNumber);
-                            UserAction userAction = new UserAction(row, col, Integer.parseInt(newNumber), Integer.parseInt(oldNumber));
-                            try {
-                                undoLog.append(userAction);
-                                storageManager.saveCurrent(currentBoard);
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            tile.setText(newNumber);
-
                         }
 
                     });
@@ -326,7 +323,7 @@ public class MainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new MainFrame().setVisible(true);
+                    new MainFrame(DifficultyEnum.EASY, "").setVisible(true);
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 } catch (SolutionInvalidException ex) {
