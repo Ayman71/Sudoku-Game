@@ -14,29 +14,13 @@ import java.util.List;
 public class VerificationResult {
 
     private List<DuplicateReport> duplicates = new ArrayList<>();
-    private State state = State.VALID;
 
     public void addDuplicate(DuplicateReport report) {
         duplicates.add(report);
-        state = State.INVALID;
-    }
-
-    public void markIncomplete() {
-        if (state == State.VALID) {
-            state = State.INCOMPLETE;
-        }
     }
 
     public boolean isValid() {
-        return state == State.VALID;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
+        return duplicates.isEmpty();
     }
 
     public List<DuplicateReport> getDuplicates() {
