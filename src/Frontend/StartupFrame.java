@@ -335,7 +335,7 @@ try {
                 new StartupFrame().setVisible(true);
             }
         });
-    }
+    
 private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton changeSourceBtn;
     private javax.swing.JButton continueGameBtn;
@@ -348,4 +348,4 @@ private javax.swing.ButtonGroup buttonGroup1;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-}
+
