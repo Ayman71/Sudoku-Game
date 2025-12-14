@@ -22,11 +22,11 @@ public class Catalog {
     }
 
     
-    public boolean isCurrent() {
+    public boolean hasCurrent() {
         return current;
     }
 
-    public boolean isAllModesExist() {
+    public boolean allModesExist() {
         return allModesExist;
     }
 

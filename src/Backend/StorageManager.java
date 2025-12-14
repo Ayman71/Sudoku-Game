@@ -12,9 +12,9 @@ import java.nio.file.*;
 public class StorageManager {
 
 
-    public final Path root;        // root of project folder
-    private final Path gameFolder; // projectfolder/game
-    private final Path incompleteFolder; // projectfolder/incomplete
+    public final Path root;        
+    private final Path gameFolder; 
+    private final Path incompleteFolder; 
 
     public StorageManager(String rootFolder) {
         this.root = Paths.get(rootFolder);
@@ -35,19 +35,15 @@ public class StorageManager {
         }
     }
 
-    // ----- SAVE -----
-
     public void saveGame(DifficultyEnum level, Game game) throws IOException {
         Path file = gameFolder.resolve(level.name().toLowerCase()).resolve("game.csv");
         writeBoard(file, game.getBoard());
     }
 
-    public void saveCurrent(Game game) throws IOException {
-        Path file = incompleteFolder.resolve("current.csv");
-        writeBoard(file, game.getBoard());
+    public void saveCurrent(int [][] board) throws IOException {
+        Path file = incompleteFolder.resolve("game.csv");
+        writeBoard(file, board);
     }
-
-    // ----- LOAD -----
 
     public Game loadGame(DifficultyEnum level) throws IOException {
         Path file = gameFolder.resolve(level.name().toLowerCase()).resolve("game.csv");
@@ -55,14 +51,15 @@ public class StorageManager {
     }
 
     public Game loadCurrent() throws IOException {
-        Path file = incompleteFolder.resolve("current.csv");
+        Path file = incompleteFolder.resolve("game.csv");
         return new Game(readBoard(file));
     }
-
-    // ----- VALIDATION -----
-
+    public Game loadSource() throws IOException {
+        Path file = incompleteFolder.resolve("source.csv");
+        return new Game(readBoard(file));
+    }
     public boolean hasCurrentGame() {
-        return Files.exists(incompleteFolder.resolve("current.csv"));
+        return Files.exists(incompleteFolder.resolve("game.csv"));
     }
 
     public boolean hasDifficultyGames() {

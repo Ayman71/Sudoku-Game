@@ -25,8 +25,8 @@ public class SudokuController implements Viewable {
     private final GameGenerator generator = new GameGenerator();
     //private final Solver solver = new Solver();
 
-    public SudokuController() {
-        this.storage = new StorageManager("");
+    public SudokuController(StorageManager storage) {
+        this.storage = storage;
     }
 
     @Override
@@ -59,8 +59,8 @@ public class SudokuController implements Viewable {
         }
 
         Game easy = generator.generate(source, 10);
-        Game medium = generator.generate(source, 15);
-        Game hard = generator.generate(source, 20);
+        Game medium = generator.generate(source, 20);
+        Game hard = generator.generate(source, 25);
 
         try {
             storage.saveGame(DifficultyEnum.EASY, easy);

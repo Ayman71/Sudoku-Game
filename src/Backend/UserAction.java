@@ -9,12 +9,13 @@ package Backend;
  * @author Ayman
  */
 public class UserAction {
+
     private final int row;
     private final int col;
     private final int oldValue;
     private final int newValue;
 
-    public UserAction(int row, int col, int oldValue, int newValue) {
+    public UserAction(int row, int col, int newValue, int oldValue) {
         this.row = row;
         this.col = col;
         this.oldValue = oldValue;
@@ -36,10 +37,9 @@ public class UserAction {
     public int getNewValue() {
         return newValue;
     }
+
     @Override
     public String toString() {
         return "(" + row + "," + col + "," + newValue + "," + oldValue + ")";
     }
 }
-    
-
