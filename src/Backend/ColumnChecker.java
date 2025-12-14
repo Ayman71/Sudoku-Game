@@ -27,6 +27,7 @@ public class ColumnChecker extends Worker {
 
         for (int row = 0; row < 9; row++) {
             int value = board[row][index];
+            if (value == 0) continue;
             positions[value].add(row + 1);
         }
 
