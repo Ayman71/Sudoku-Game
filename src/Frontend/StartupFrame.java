@@ -274,9 +274,6 @@ SudokuController sudokuController;
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
 try {
             // Set FlatLaf Dark look and feel
@@ -285,22 +282,12 @@ try {
         } catch (Exception ex) {
             System.err.println("Failed to initialize FlatLaf");
         }
-        java.awt.EventQueue.invokeLater(new Runnable() {
-           
+       
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton changeSourceBtn;
-    private javax.swing.JButton continueGameBtn;
-    private javax.swing.JRadioButton easyRadio;
-    private javax.swing.JRadioButton hardRadio;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JRadioButton mediumRadio;
-    private javax.swing.JButton newGameBtn;
-    // End of variables declaration//GEN-END:variables
+   
 
-}
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             
  public void run() {
@@ -312,10 +299,10 @@ try {
                     Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        });
-            }
-        });
-    }
+        
+            
+        
+    
 private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton changeSourceBtn;
     private javax.swing.JButton continueGameBtn;
@@ -328,4 +315,4 @@ private javax.swing.ButtonGroup buttonGroup1;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-}
+
