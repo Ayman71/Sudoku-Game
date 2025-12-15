@@ -59,7 +59,7 @@ SudokuController sudokuController;
             return selectedFile.getAbsolutePath();
         }
         return null;
-    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -285,10 +285,7 @@ try {
        
     }
 
-   
-
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
+   java.awt.EventQueue.invokeLater(new Runnable() {
             
  public void run() {
                 try {
@@ -297,9 +294,10 @@ try {
                     Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SolutionInvalidException ex) {
                     Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                } }
             }
-        
+        );
+     
             
         
     
