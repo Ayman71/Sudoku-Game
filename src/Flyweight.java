@@ -7,6 +7,6 @@
  *
  * @author husse
  */
-public class Flyweight {
-    
+public interface Flyweight {
+    int getValue(int row, int col, int[] currentPermutation);
 }
