@@ -50,9 +50,7 @@ public class Verifier {
             }
         }
 
-        if (hasZero && result.getState() == State.VALID) {
-            result.setState(State.INCOMPLETE);
-        }
+        
         if (!result.getDuplicatePositions().isEmpty()) {
             result.setState(State.INVALID);
         } else if (hasZero) {

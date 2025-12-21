@@ -19,5 +19,9 @@ public class Game {
     public int[][] getBoard() {
         return board;
     }
+
+    public void setCell(int row, int col, int i) {
+         this.board[row][col] = i;
+    }
     
 }

@@ -22,10 +22,13 @@ import Backend.Loader;
 import Backend.SolutionInvalidException;
 import Backend.StorageManager;
 import Backend.SudokuController;
+import Backend.SudokuSolver;
 import Backend.UndoLog;
 import Backend.UserAction;
+import Backend.Verifier;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -267,6 +270,11 @@ public class MainFrame extends javax.swing.JFrame {
         solveBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         solveBtn.setText("Solve");
         solveBtn.setEnabled(false);
+        solveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                solveBtnActionPerformed(evt);
+            }
+        });
         jPanel1.add(solveBtn);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -340,6 +348,17 @@ public class MainFrame extends javax.swing.JFrame {
         Game current = new Game(currentBoard);
         sudokuController.verifyGame(current);
     }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void solveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_solveBtnActionPerformed
+        Verifier verifier = new Verifier();
+        Game game = new Game(currentBoard);
+        SudokuSolver solver = new SudokuSolver(game, verifier);
+        int[] solution = solver.solve();
+
+        for (int i : solution) {
+            System.out.print(i + " ");
+        }
+    }//GEN-LAST:event_solveBtnActionPerformed
 
     private boolean hasZeros(int[][] board) {
         for (int r = 0; r < 9; r++) {

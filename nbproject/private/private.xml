@@ -8,13 +8,8 @@
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Verifier.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Worker.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/MainFrame.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/SudokuController.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/StartupFrame.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/UndoLog.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/StorageManager.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/SolutionInvalidException.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Loader.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Catalog.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/PermutationIterator.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/SudokuSolver.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Game.java</file>
         </group>
     </open-files>
