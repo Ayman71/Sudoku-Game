@@ -154,12 +154,12 @@ public class StartupFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(continueGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(newGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(easyRadio)
                         .addComponent(mediumRadio)
-                        .addComponent(hardRadio)))
+                        .addComponent(hardRadio))
+                    .addComponent(newGameBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(changeSourceBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(28, Short.MAX_VALUE))
@@ -170,13 +170,31 @@ public class StartupFrame extends javax.swing.JFrame {
 
     private void changeSourceBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeSourceBtnActionPerformed
         sourcePath = chooseSourcePath();
+        Verifier verifier = new Verifier();
+        Game source = null;
         try {
-            start();
+            source = storageManager.loadSourceGameFromPath(sourcePath);
+        } catch (Exception e) {
+            sourcePath = chooseSourcePath();
+        }
+        try {
+            source = storageManager.loadSourceGameFromPath(sourcePath);
         } catch (IOException ex) {
             Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SolutionInvalidException ex) {
-            Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        VerificationResult result = verifier.verify(source.getBoard());
+        if (result.getState() == State.VALID) {
+            try {
+                sudokuController.driveGames(source);
+                newGameBtn.setEnabled(true);
+            } catch (SolutionInvalidException ex) {
+                Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Game provided is invalid or incomplete.", "Invalid Source Game", JOptionPane.ERROR_MESSAGE);
+            newGameBtn.setEnabled(false);
+        }  
+        
     }//GEN-LAST:event_changeSourceBtnActionPerformed
 
     private void continueGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueGameBtnActionPerformed
@@ -226,29 +244,13 @@ public class StartupFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newGameBtnActionPerformed
     private void start() throws IOException, SolutionInvalidException {
         Catalog catalog = sudokuController.getCatalog();
-        Verifier verifier = new Verifier();
         if (catalog.hasCurrent()) {
+            System.out.println("has incomplete");
             continueGameBtn.setEnabled(true);
+            
+        }if (catalog.allModesExist()) {
+            System.out.println("has modes");
             newGameBtn.setEnabled(true);
-        } else if (catalog.allModesExist()) {
-            newGameBtn.setEnabled(true);
-        } else {
-            sourcePath = chooseSourcePath();
-            newGameBtn.setEnabled(true);
-        }
-        Game source;
-        try {
-            source = storageManager.loadSourceGameFromPath(sourcePath);
-        } catch (Exception e) {
-            sourcePath = chooseSourcePath();
-        }
-        source = storageManager.loadSourceGameFromPath(sourcePath);
-        VerificationResult result = verifier.verify(source.getBoard());
-        if (result.getState() == State.VALID) {
-            sudokuController.driveGames(source);
-        } else {
-            JOptionPane.showMessageDialog(this, "Game provided is invalid or incomplete.", "Invalid Source Game", JOptionPane.ERROR_MESSAGE);
-            newGameBtn.setEnabled(false);
         }
     }
 

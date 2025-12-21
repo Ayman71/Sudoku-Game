@@ -9,22 +9,17 @@ package Backend;
  * @author Ayman
  */
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class VerificationResult {
 
-    private List<DuplicateReport> duplicates = new ArrayList<>();
+    private Set<Integer> duplicatePositions = new HashSet<>();
     private State state = State.VALID;
 
-    public void addDuplicate(DuplicateReport report) {
-        duplicates.add(report);
-        state = State.INVALID;
-    }
-
-    public void markIncomplete() {
-        if (state == State.VALID) {
-            state = State.INCOMPLETE;
-        }
+    public void addDuplicatePosition(int position) {
+        duplicatePositions.add(position);
     }
 
     public boolean isValid() {
@@ -39,7 +34,7 @@ public class VerificationResult {
         this.state = state;
     }
 
-    public List<DuplicateReport> getDuplicates() {
-        return duplicates;
+    public Set<Integer> getDuplicatePositions() {
+        return duplicatePositions;
     }
 }

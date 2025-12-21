@@ -99,6 +99,11 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     void setupBoard(int[][] board) throws IOException {
+        if (zeros(currentBoard) == 5) {
+            solveBtn.setEnabled(true);
+        } else {
+            solveBtn.setEnabled(false);
+        }
         for (int r = 0; r < 9; r++) {
             for (int c = 0; c < 9; c++) {
 
@@ -140,6 +145,11 @@ public class MainFrame extends javax.swing.JFrame {
                                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 tile.setText(newNumber);
+                                if (zeros(currentBoard) == 5) {
+                                    solveBtn.setEnabled(true);
+                                } else {
+                                    solveBtn.setEnabled(false);
+                                }
                             }
                         }
 
@@ -203,9 +213,10 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         undoButton = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        solveBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         difficultyLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         difficultyLabel.setText("Difficulty: ");
@@ -246,11 +257,17 @@ public class MainFrame extends javax.swing.JFrame {
 
         jButton11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButton11.setText("Verify");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButton11);
 
-        jButton12.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton12.setText("Solve");
-        jPanel1.add(jButton12);
+        solveBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        solveBtn.setText("Solve");
+        solveBtn.setEnabled(false);
+        jPanel1.add(solveBtn);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -303,11 +320,49 @@ public class MainFrame extends javax.swing.JFrame {
                 tile.setText(oldValue);
             }
             storageManager.saveCurrent(currentBoard);
+            if (zeros(currentBoard) == 5) {
+                solveBtn.setEnabled(true);
+            } else {
+                solveBtn.setEnabled(false);
+            }
         } catch (IOException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_undoButtonActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+
+        if (hasZeros(currentBoard)) {
+            JOptionPane.showMessageDialog(this, "Game is incomplete!", "Icomplete", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Game current = new Game(currentBoard);
+        sudokuController.verifyGame(current);
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private boolean hasZeros(int[][] board) {
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] == 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private int zeros(int[][] board) {
+        int count = 0;
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] == 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 
     /**
      * @param args the command line arguments
@@ -340,9 +395,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel difficultyLabel;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel keyPadPanel;
+    private javax.swing.JButton solveBtn;
     private javax.swing.JButton undoButton;
     // End of variables declaration//GEN-END:variables
 }

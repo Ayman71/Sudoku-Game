@@ -20,29 +20,40 @@ public class Verifier {
     public VerificationResult verify(int[][] board) {
         this.board = board;
         boolean hasZero = false;
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                if (board[r][c] == 0) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (board[row][col] == 0) {
                     hasZero = true;
+                }
+                
+                for (int c = col + 1; c < 9; c++) {
+                    if (board[row][col] == board[row][c] && board[row][col] != 0) {
+                        result.addDuplicatePosition(row * 9 + col);
+                    }
+                }
+                
+                for (int r = row + 1; r < 9; r++) {
+                    if (board[row][col] == board[r][col] && board[row][col] != 0) {
+                        result.addDuplicatePosition(row * 9 + col);
+                    }
+                }
+                
+                int boxRowStart = (row / 3) * 3;
+                int boxColStart = (col / 3) * 3;
+                for (int r = boxRowStart; r < boxRowStart + 3; r++) {
+                    for (int c = boxColStart; c < boxColStart + 3; c++) {
+                        if (r != row && c != col && board[row][col] == board[r][c] && board[row][col] != 0) {
+                            result.addDuplicatePosition(row * 9 + col );
+                        }
+                    }
                 }
             }
         }
-        for (int r = 0; r < 9; r++) {
-            new RowChecker(r, board, result).run();
-        }
-
-        for (int c = 0; c < 9; c++) {
-            new ColumnChecker(c, board, result).run();
-        }
-
-        for (int b = 0; b < 9; b++) {
-            new BoxChecker(b, board, result).run();
-        }
 
         if (hasZero && result.getState() == State.VALID) {
-            result.markIncomplete();
+            result.setState(State.INCOMPLETE);
         }
-        if (!result.getDuplicates().isEmpty()) {
+        if (!result.getDuplicatePositions().isEmpty()) {
             result.setState(State.INVALID);
         } else if (hasZero) {
             result.setState(State.INCOMPLETE);

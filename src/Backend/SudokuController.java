@@ -69,12 +69,28 @@ public class SudokuController implements Viewable {
 
     @Override
     public String verifyGame(Game game) {
-        return verifier.verify(game.getBoard()).getState().name();
+        VerificationResult verificationResult = verifier.verify(game.getBoard());
+        if (verificationResult.getState() == State.VALID) {
+            System.out.println("valid solution");
+            return "valid solution";
+        }
+        StringBuilder result = new StringBuilder();
+
+        for (int position : verificationResult.getDuplicatePositions()) {
+            if (result.length() > 0) {
+                result.append(",");
+            }
+            result.append(position);
+        }
+        System.out.println(result.toString());
+        
+        return result.toString();
+
     }
 
     @Override
     public int[] solveGame(Game game) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

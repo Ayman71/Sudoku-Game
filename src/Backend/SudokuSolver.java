@@ -8,16 +8,6 @@ package Backend;
  *
  * @author Ayman
  */
-public class Game {
-
-    private int[][] board; // 9×9 grid
-
-    public Game(int[][] board) {
-        this.board = board;
-    }
-
-    public int[][] getBoard() {
-        return board;
-    }
+public class SudokuSolver {
     
 }
