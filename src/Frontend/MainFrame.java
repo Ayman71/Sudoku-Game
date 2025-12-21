@@ -129,7 +129,10 @@ public class MainFrame extends javax.swing.JFrame {
                     }
                     tile.setBackground(Color.LIGHT_GRAY);
                     tile.addActionListener(e -> {
-                        if (buttonSelected == null) {
+                        if (!undoButton.isEnabled()) {
+                            JOptionPane.showMessageDialog(this, "Game over! try again in a new game.", "Game Over", JOptionPane.WARNING_MESSAGE);
+
+                        } else if (buttonSelected == null) {
                             JOptionPane.showMessageDialog(this, "No number selected! please try again.", "Selection warining", JOptionPane.WARNING_MESSAGE);
 
                         } else {
@@ -217,6 +220,7 @@ public class MainFrame extends javax.swing.JFrame {
         undoButton = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         solveBtn = new javax.swing.JButton();
+        backBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -277,6 +281,14 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jPanel1.add(solveBtn);
 
+        backBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        backBtn.setText("Back To Main Menu");
+        backBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -287,9 +299,10 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(gamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(keyPadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(backBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(difficultyLabel))
                 .addGap(20, 20, 20))
         );
@@ -304,7 +317,9 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(keyPadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -354,11 +369,70 @@ public class MainFrame extends javax.swing.JFrame {
         Game game = new Game(currentBoard);
         SudokuSolver solver = new SudokuSolver(game, verifier);
         int[] solution = solver.solve();
+        if (solution != null) {
+            setSolution(solution);
+            JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 
-        for (int i : solution) {
-            System.out.print(i + " ");
+        } else {
+            EndGame();
+            JOptionPane.showMessageDialog(this, "No valid solution found for current board!", "Game Over", JOptionPane.ERROR_MESSAGE);
+
         }
+
     }//GEN-LAST:event_solveBtnActionPerformed
+
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        StartupFrame startupFrame = null;
+        try {
+            startupFrame = new StartupFrame();
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SolutionInvalidException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setVisible(false);
+        startupFrame.setVisible(true);
+    }//GEN-LAST:event_backBtnActionPerformed
+
+    private void setSolution(int[] solution) {
+        int solutionIdx = 0;
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (editable[r][c] && currentBoard[r][c] == 0) {
+                    currentBoard[r][c] = solution[solutionIdx++];
+                    Tile tile = tiles[r][c];
+                    tile.setText(String.valueOf(currentBoard[r][c]));
+                    tile.setBackground(Color.decode("#95edad"));
+                }
+            }
+        }
+        EndGame();
+    }
+
+    private void EndGame() {
+        for (Component comp : keyPadPanel.getComponents()) {
+            if (comp instanceof JToggleButton) {
+                JToggleButton btn = (JToggleButton) comp;
+                btn.setEnabled(false);  // Disable each keypad button
+                btn.setSelected(false);
+                buttonSelected = null;
+            }
+        }
+
+        // Disable all action buttons
+        solveBtn.setEnabled(false);
+        undoButton.setEnabled(false);
+        jButton11.setEnabled(false);  // Disable verify button
+
+        try {
+            // Assuming storageManager.deleteCurrent() is the method to delete the current game
+            storageManager.deleteCurrent();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error deleting the current game from storage.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
+    }
 
     private boolean hasZeros(int[][] board) {
         for (int r = 0; r < 9; r++) {
@@ -411,6 +485,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backBtn;
     private javax.swing.JLabel difficultyLabel;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JButton jButton11;

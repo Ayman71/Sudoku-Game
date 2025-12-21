@@ -126,4 +126,18 @@ public class StorageManager {
         }
         return b;
     }
+
+    public void deleteCurrent() throws IOException {
+        Path gameFile = incompleteFolder.resolve("game.csv");
+        Path sourceFile = incompleteFolder.resolve("source.csv");
+
+        // Check if the files exist before attempting to delete them
+        if (Files.exists(gameFile)) {
+            Files.delete(gameFile);
+        }
+
+        if (Files.exists(sourceFile)) {
+            Files.delete(sourceFile);
+        }
+    }
 }

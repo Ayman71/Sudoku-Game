@@ -64,11 +64,11 @@ public class SudokuSolver {
 
             if (result.getState() == Backend.State.VALID) {
                 if (!solutionFound) {
-                    System.out.println("found!!!");
+                    //System.out.println("found!!!");
                     solutionFound = true;
                     validPermutation = permutation.clone();
-                    System.out.println("Solution found by thread " + Thread.currentThread().getName());
-                    printBoard(new Game(clonedBoard));  // Print the valid solution found by the thread
+                    //System.out.println("Solution found by thread " + Thread.currentThread().getName());
+                    //printBoard(new Game(clonedBoard));
                 }
             }
         }
@@ -101,6 +101,10 @@ public class SudokuSolver {
         // Iterate over the permutations and assign each permutation to a separate thread
         while (permutationIterator.hasNext()) {
             int[] permutation = permutationIterator.next();
+            for (int i : permutation) {
+                System.out.print(i+" ");
+            }
+            System.out.println("");
             SolverTask task = new SolverTask(permutation, emptyCells);
             threads.add(task);
             task.start();  // Start the thread

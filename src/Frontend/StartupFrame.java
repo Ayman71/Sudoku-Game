@@ -32,7 +32,7 @@ public class StartupFrame extends javax.swing.JFrame {
      */
     SudokuController sudokuController;
     StorageManager storageManager;
-    String sourcePath = "D:\\GitHub\\Sudoku-Game\\DefaultgGame.csv";
+    String sourcePath = "D:\\GitHub\\Sudoku-Game\\DefaultGame.csv";
 
     public StartupFrame() throws IOException, SolutionInvalidException {
         initComponents();
@@ -45,7 +45,7 @@ public class StartupFrame extends javax.swing.JFrame {
         buttonGroup1.add(hardRadio);
 
         easyRadio.setSelected(true);
-
+        
         start();
     }
 
@@ -243,6 +243,8 @@ public class StartupFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_newGameBtnActionPerformed
     private void start() throws IOException, SolutionInvalidException {
+        Game source = storageManager.loadSourceGameFromPath(sourcePath);
+        sudokuController.driveGames(source);
         Catalog catalog = sudokuController.getCatalog();
         if (catalog.hasCurrent()) {
             System.out.println("has incomplete");
