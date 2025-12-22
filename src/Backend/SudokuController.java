@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 
 /**
  *
@@ -23,10 +24,23 @@ public class SudokuController implements Viewable {
     private final StorageManager storage;
     private final Verifier verifier = new Verifier();
     private final GameGenerator generator = new GameGenerator();
-    //private final Solver solver = new Solver();
+    private final java.util.List<GameObserver> observers = new ArrayList<>();
 
     public SudokuController(StorageManager storage) {
         this.storage = storage;
+    }
+
+    public void addObserver(GameObserver observer) {
+        observers.add(observer);
+    }
+
+     void notifyObservers(int[][] board) {
+        for (GameObserver observer : observers) {
+            observer.update(board);
+        }
+    }
+    public void updateGameState(int[][] board) {
+        notifyObservers(board);
     }
 
     @Override
@@ -89,6 +103,10 @@ public class SudokuController implements Viewable {
     @Override
     public int[] solveGame(Game game) {
         SudokuSolver solver = new SudokuSolver(game, verifier);
+        int[] solution = solver.solve();
+        if (solution != null) {
+            notifyObservers(game.getBoard());
+        }
         return solver.solve();
     }
 

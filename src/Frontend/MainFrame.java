@@ -8,6 +8,7 @@ import Backend.Catalog;
 import Backend.ControllerFacade;
 import Backend.DifficultyEnum;
 import Backend.Game;
+import Backend.GameObserver;
 import com.formdev.flatlaf.FlatDarkLaf;
 import java.awt.Color;
 import java.awt.Component;
@@ -24,7 +25,6 @@ import Backend.NotFoundException;
 import Backend.SolutionInvalidException;
 import Backend.StorageManager;
 import Backend.SudokuController;
-import Backend.GameObserver;
 import Backend.PlaceNumberCommand;
 import Backend.SudokuSolver;
 import Backend.UndoLog;
@@ -40,11 +40,11 @@ import java.util.logging.Logger;
  *
  * @author Ayman
  */
-public class MainFrame extends javax.swing.JFrame implements GameObserver {
+public class MainFrame extends javax.swing.JFrame implements GameObserver{
 
     @Override
     public void update(int[][] board) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+         System.out.println("Observer notified: Game state updated.");
     }
 
     /**
@@ -85,6 +85,7 @@ public class MainFrame extends javax.swing.JFrame implements GameObserver {
         gamePanel.setPreferredSize(new Dimension(450, 450));
         pack();
         controllerFacade = new ControllerFacade();
+        controllerFacade.addObserver(this);
         int[][] board;
         int[][] source;
 
@@ -369,6 +370,7 @@ public class MainFrame extends javax.swing.JFrame implements GameObserver {
             }
             paintTiles();
             controllerFacade.saveCurrent(currentBoard);
+            controllerFacade.updateGameState(currentBoard);
             if (zeros(currentBoard) == 5) {
                 solveBtn.setEnabled(true);
             } else {
@@ -444,16 +446,11 @@ public class MainFrame extends javax.swing.JFrame implements GameObserver {
                         }
                     }
                 }
-                JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
                 EndGame();
-            } else {
-                EndGame();
-                JOptionPane.showMessageDialog(this, "No valid solution found for current board!", "Game Over",
-                        JOptionPane.ERROR_MESSAGE);
-            }
+            } 
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "No valid solution found for current board!", "Game Over", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_solveBtnActionPerformed
 

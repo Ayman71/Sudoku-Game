@@ -243,12 +243,12 @@ public class StartupFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_newGameBtnActionPerformed
     
     private void start() throws IOException, SolutionInvalidException {
-        controllerFacade.driveGames(sourcePath);
-        
         if (controllerFacade.hasCurrentGame()) {
+            controllerFacade.driveGames(sourcePath);
             continueGameBtn.setEnabled(true);
             
         }if (controllerFacade.hasDifficultyGames()) {
+            controllerFacade.driveGames(sourcePath);
             newGameBtn.setEnabled(true);
         }
     }

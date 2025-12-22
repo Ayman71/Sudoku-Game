@@ -9,15 +9,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  * @author Ayman
  */
-public class ControllerFacade implements Controllable {
+public class ControllerFacade implements Controllable{
 
-    private final Viewable controller;
+    private final SudokuController controller;
     private final StorageManager storageManager;
     private final GameGenerator gameGenerator;
 
@@ -145,7 +147,7 @@ public class ControllerFacade implements Controllable {
         if (solution == null)
             throw new InvalidGame("No solution found");
 
-        java.util.List<int[]> empty = new java.util.ArrayList<>();
+        List<int[]> empty = new ArrayList<>();
         for (int r = 0; r < 9; r++)
             for (int c = 0; c < 9; c++)
                 if (board[r][c] == 0)
@@ -171,6 +173,14 @@ public class ControllerFacade implements Controllable {
             clonedBoard[i] = originalBoard[i].clone();  // Clone each row
         }
         return clonedBoard;
+    }
+
+    public void addObserver(GameObserver observer) {
+        controller.addObserver(observer);
+    }
+    
+    public void updateGameState(int[][] board) {
+        controller.notifyObservers(board);
     }
 
 }
