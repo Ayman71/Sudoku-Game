@@ -14,12 +14,11 @@ import java.util.Iterator;
 public class PermutationIterator implements Iterator<int[]> {
 
     private int[] currentPermutation;
-    private int totalPermutations = (int) Math.pow(9, 5); // 9^5 possibilities
+    private int totalPermutations = (int) Math.pow(9, 5);
     private int currentIndex = 0;
 
     public PermutationIterator() {
-        currentPermutation = new int[5];  // Array for 5 positions (the number of empty cells)
-        // Initialize with the first permutation, which will be all 1s (i.e., [1, 1, 1, 1, 1])
+        currentPermutation = new int[5];
         Arrays.fill(currentPermutation, 1);
     }
 
@@ -30,9 +29,8 @@ public class PermutationIterator implements Iterator<int[]> {
 
     @Override
     public int[] next() {
-        int[] permutation = currentPermutation.clone();  // Clone the current permutation to return it
+        int[] permutation = currentPermutation.clone();
 
-        // Increment the current permutation
         incrementPermutation();
 
         currentIndex++;
@@ -40,13 +38,12 @@ public class PermutationIterator implements Iterator<int[]> {
     }
 
     private void incrementPermutation() {
-        // Start from the rightmost element and carry over if needed
         for (int i = currentPermutation.length - 1; i >= 0; i--) {
             if (currentPermutation[i] < 9) {
-                currentPermutation[i]++;  // Increment the current element (base 9, 1 to 9)
-                return;  // Done, no need to carry over further
+                currentPermutation[i]++; 
+                return;
             } else {
-                currentPermutation[i] = 1;  // Reset to 1 and carry over to the next element
+                currentPermutation[i] = 1; 
             }
         }
     }

@@ -4,6 +4,8 @@
  */
 package Backend;
 
+import java.util.List;
+
 /**
  *
  * @author Ayman
@@ -38,7 +40,7 @@ public class Verifier {
     }
 
 
-    public VerificationResult verify(int[][] board, java.util.List<int[]> emptyCells, int[] permutation) {
+    public VerificationResult verify(int[][] board, List<int[]> emptyCells, int[] permutation) {
         result = new VerificationResult();
         this.board = board;
 
@@ -64,7 +66,7 @@ public class Verifier {
         return result;
     }
 
-    private int getValue(int r, int c, java.util.List<int[]> emptyCells, int[] permutation) {
+    private int getValue(int r, int c, List<int[]> emptyCells, int[] permutation) {
         for (int i = 0; i < emptyCells.size(); i++) {
             int[] cell = emptyCells.get(i);
             if (cell[0] == r && cell[1] == c) {
@@ -107,7 +109,7 @@ public class Verifier {
 
     }
 
-    private void checkDuplicatesVirtual(int row, int col, int value, java.util.List<int[]> emptyCells,
+    private void checkDuplicatesVirtual(int row, int col, int value,List<int[]> emptyCells,
             int[] permutation) {
         if (value == 0)
             return;

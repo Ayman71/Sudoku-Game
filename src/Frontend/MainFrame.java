@@ -5,6 +5,7 @@
 package Frontend;
 
 import Backend.Catalog;
+import Backend.ControllerFacade;
 import Backend.DifficultyEnum;
 import Backend.Game;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -19,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import Backend.Loader;
+import Backend.NotFoundException;
 import Backend.SolutionInvalidException;
 import Backend.StorageManager;
 import Backend.SudokuController;
@@ -56,10 +58,11 @@ public class MainFrame extends javax.swing.JFrame {
     private Tile tiles[][] = new Tile[9][9];
     private int currentBoard[][] = new int[9][9];
     private boolean editable[][] = new boolean[9][9];
+    ControllerFacade controllerFacade;
     SudokuController sudokuController;
     StorageManager storageManager;
 
-    public MainFrame(DifficultyEnum difficultyEnum, String sourcePath) throws FileNotFoundException, SolutionInvalidException, IOException {
+    public MainFrame(DifficultyEnum difficultyEnum, String sourcePath) throws NotFoundException, SolutionInvalidException, IOException {
         initComponents();
         this.setSize(750, 450);
         this.setLocationRelativeTo(null);
@@ -507,7 +510,7 @@ public class MainFrame extends javax.swing.JFrame {
             public void run() {
                 try {
                     new MainFrame(DifficultyEnum.EASY, "").setVisible(true);
-                } catch (FileNotFoundException ex) {
+                } catch (NotFoundException ex) {
                     ex.printStackTrace();
                 } catch (SolutionInvalidException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);

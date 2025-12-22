@@ -88,7 +88,8 @@ public class SudokuController implements Viewable {
 
     @Override
     public int[] solveGame(Game game) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        SudokuSolver solver = new SudokuSolver(game, verifier);
+        return solver.solve();
     }
 
     @Override
