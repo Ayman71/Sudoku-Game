@@ -17,7 +17,7 @@ public interface Viewable {
 
     // Returns a random game with the specified difficulty
     // Note: the Game class is the representation of the soduko game in the controller
-    Game getGame(DifficultyEnum level) throws FileNotFoundException;
+    Game getGame(DifficultyEnum level) throws NotFoundException;
 
     // Gets a sourceSolution and generates three levels of difficulty
     void driveGames(Game source) throws SolutionInvalidException;
@@ -26,7 +26,7 @@ public interface Viewable {
     // if valid and complete, return a value
     // if valid and incomplete, returns another value
     // The exact repersentation as a string is done as you best see fit
-    String verifyGame(Game game) throws SolutionInvalidException ;
+    String verifyGame(Game game) ;
     // returns the correct combination for the missing numbers
     // Hint: So, there are many ways you can approach this, one way is
     // to have a way to map an index in the combination array to its location in the board

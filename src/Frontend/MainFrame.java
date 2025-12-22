@@ -151,6 +151,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 tile.setText(newNumber);
+                                paintTiles();
                                 if (zeros(currentBoard) == 5) {
                                     solveBtn.setEnabled(true);
                                 } else {
@@ -218,7 +219,7 @@ public class MainFrame extends javax.swing.JFrame {
         keyPadPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         undoButton = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
+        verifyBtn = new javax.swing.JButton();
         solveBtn = new javax.swing.JButton();
         backBtn = new javax.swing.JButton();
 
@@ -262,14 +263,14 @@ public class MainFrame extends javax.swing.JFrame {
         });
         jPanel1.add(undoButton);
 
-        jButton11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton11.setText("Verify");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        verifyBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        verifyBtn.setText("Verify");
+        verifyBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                verifyBtnActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton11);
+        jPanel1.add(verifyBtn);
 
         solveBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         solveBtn.setText("Solve");
@@ -342,6 +343,7 @@ public class MainFrame extends javax.swing.JFrame {
             } else {
                 tile.setText(oldValue);
             }
+            paintTiles();
             storageManager.saveCurrent(currentBoard);
             if (zeros(currentBoard) == 5) {
                 solveBtn.setEnabled(true);
@@ -354,15 +356,48 @@ public class MainFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_undoButtonActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void paintTiles(){
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if(editable[row][col]){
+                    tiles[row][col].setBackground(Color.LIGHT_GRAY);
+                }
+            }
+        }
+    }
+    private void verifyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verifyBtnActionPerformed
 
         if (hasZeros(currentBoard)) {
             JOptionPane.showMessageDialog(this, "Game is incomplete!", "Icomplete", JOptionPane.ERROR_MESSAGE);
             return;
         }
         Game current = new Game(currentBoard);
-        sudokuController.verifyGame(current);
-    }//GEN-LAST:event_jButton11ActionPerformed
+        String result = sudokuController.verifyGame(current);
+        if (result.equals("VALID")) {
+            JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+
+        } else {
+            String[] tokens = result.split(",");
+            int[] indicies = new int[tokens.length];
+            for (int i = 0; i < tokens.length; i++) {
+                indicies[i] = Integer.parseInt(tokens[i]);
+            }
+            markWrongTiles(indicies);
+        }
+    }//GEN-LAST:event_verifyBtnActionPerformed
+    private void markWrongTiles(int[] indicies) {
+        for (int index : indicies) {
+            // Calculate the row and column from the 1D index
+            int row = index / 9;
+            int col = index % 9;
+
+            // Check if the tile is editable
+            if (editable[row][col]) {
+                Tile tile = tiles[row][col];
+                tile.setBackground(Color.decode("#fa776e")); // Mark the tile background as red
+            }
+        }
+    }
 
     private void solveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_solveBtnActionPerformed
         Verifier verifier = new Verifier();
@@ -422,7 +457,7 @@ public class MainFrame extends javax.swing.JFrame {
         // Disable all action buttons
         solveBtn.setEnabled(false);
         undoButton.setEnabled(false);
-        jButton11.setEnabled(false);  // Disable verify button
+        verifyBtn.setEnabled(false);  // Disable verify button
 
         try {
             // Assuming storageManager.deleteCurrent() is the method to delete the current game
@@ -488,10 +523,10 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton backBtn;
     private javax.swing.JLabel difficultyLabel;
     private javax.swing.JPanel gamePanel;
-    private javax.swing.JButton jButton11;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel keyPadPanel;
     private javax.swing.JButton solveBtn;
     private javax.swing.JButton undoButton;
+    private javax.swing.JButton verifyBtn;
     // End of variables declaration//GEN-END:variables
 }

@@ -38,7 +38,7 @@ public class SudokuController implements Viewable {
     }
 
     @Override
-    public Game getGame(DifficultyEnum level) throws FileNotFoundException {
+    public Game getGame(DifficultyEnum level) throws NotFoundException {
         try {
             if (level == DifficultyEnum.INCOMPLETE) {
                 return storage.loadCurrent();
@@ -46,7 +46,7 @@ public class SudokuController implements Viewable {
 
             return storage.loadGame(level);
         } catch (Exception e) {
-            throw new FileNotFoundException("Game not found for " + level);
+            throw new NotFoundException("Game not found for " + level);
         }
     }
 
@@ -71,19 +71,17 @@ public class SudokuController implements Viewable {
     public String verifyGame(Game game) {
         VerificationResult verificationResult = verifier.verify(game.getBoard());
         if (verificationResult.getState() == State.VALID) {
-            System.out.println("valid solution");
-            return "valid solution";
+            return "VALID";
+        } else if (verificationResult.getState() == State.INCOMPLETE) {
+            return "INCOMPLETE";
         }
         StringBuilder result = new StringBuilder();
-
         for (int position : verificationResult.getDuplicatePositions()) {
             if (result.length() > 0) {
                 result.append(",");
             }
             result.append(position);
         }
-        System.out.println(result.toString());
-        
         return result.toString();
 
     }

@@ -6,12 +6,18 @@
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/VerificationResult.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/RandomPairs.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Verifier.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Worker.java</file>
-            <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/MainFrame.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/PermutationIterator.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/SudokuSolver.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Game.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/StorageManager.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/ControllerFacade.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameGenerator.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/SudokuController.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Controllable.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Viewable.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/NotFoundException.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameVerifier.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/MainFrame.java</file>
         </group>
     </open-files>
 </project-private>
