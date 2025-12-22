@@ -24,6 +24,8 @@ import Backend.NotFoundException;
 import Backend.SolutionInvalidException;
 import Backend.StorageManager;
 import Backend.SudokuController;
+import Backend.GameObserver;
+import Backend.PlaceNumberCommand;
 import Backend.SudokuSolver;
 import Backend.UndoLog;
 import Backend.UserAction;
@@ -38,7 +40,12 @@ import java.util.logging.Logger;
  *
  * @author Ayman
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame implements GameObserver {
+
+    @Override
+    public void update(int[][] board) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
     /**
      * Creates new form MainFrame
@@ -59,23 +66,30 @@ public class MainFrame extends javax.swing.JFrame {
     private int currentBoard[][] = new int[9][9];
     private boolean editable[][] = new boolean[9][9];
     ControllerFacade controllerFacade;
-    SudokuController sudokuController;
-    StorageManager storageManager;
 
-    public MainFrame(DifficultyEnum difficultyEnum, String sourcePath) throws NotFoundException, SolutionInvalidException, IOException {
+    public MainFrame(char difficulty, String sourcePath) throws NotFoundException, SolutionInvalidException, IOException {
         initComponents();
         this.setSize(750, 450);
         this.setLocationRelativeTo(null);
+        DifficultyEnum difficultyEnum = switch (Character.toUpperCase(difficulty)) {
+            case 'E' ->
+                DifficultyEnum.EASY;
+            case 'M' ->
+                DifficultyEnum.MEDIUM;
+            case 'H' ->
+                DifficultyEnum.HARD;
+            default ->
+                DifficultyEnum.INCOMPLETE;
+        };
         gamePanel.setLayout(new GridLayout(9, 9));
         gamePanel.setPreferredSize(new Dimension(450, 450));
         pack();
-        storageManager = new StorageManager("");
-        sudokuController = new SudokuController(storageManager);
+        controllerFacade = new ControllerFacade();
         int[][] board;
         int[][] source;
 
-        board = sudokuController.getGame(difficultyEnum).getBoard();
-        source = storageManager.loadSource(difficultyEnum).getBoard();
+        board = controllerFacade.getGame(difficulty);
+        source = controllerFacade.loadSource(difficultyEnum).getBoard();
 
         int editables = 0;
         for (int r = 0; r < 9; r++) {
@@ -96,8 +110,8 @@ public class MainFrame extends javax.swing.JFrame {
         undoLog = new UndoLog("incomplete");
         if (difficultyEnum != DifficultyEnum.INCOMPLETE) {
             undoLog.clearLog();
-            storageManager.saveCurrent(board);
-            storageManager.saveNewCurrentSource(board);
+            controllerFacade.saveCurrent(board);
+            controllerFacade.saveNewCurrentSource(board);
         }
         currentBoard = board;
         setupBoard(board);
@@ -145,12 +159,15 @@ public class MainFrame extends javax.swing.JFrame {
                                 if (oldNumber.equals("")) {
                                     oldNumber = "0";
                                 }
-                                currentBoard[row][col] = Integer.parseInt(newNumber);
-                                UserAction userAction = new UserAction(row, col, Integer.parseInt(newNumber), Integer.parseInt(oldNumber));
+                                int newVal = Integer.parseInt(newNumber);
+                                int oldVal = Integer.parseInt(oldNumber);
+
+                                PlaceNumberCommand command = new PlaceNumberCommand(row, col, newVal, oldVal,
+                                        currentBoard, undoLog);
                                 try {
-                                    undoLog.append(userAction);
-                                    storageManager.saveCurrent(currentBoard);
-                                } catch (IOException ex) {
+                                    command.execute();
+                                    controllerFacade.saveCurrent(currentBoard);
+                                } catch (Exception ex) {
                                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 tile.setText(newNumber);
@@ -333,36 +350,40 @@ public class MainFrame extends javax.swing.JFrame {
     private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
 
         try {
-            UserAction userAction = undoLog.undoLast();
-            if (userAction == null) {
-                JOptionPane.showMessageDialog(this, "No previous log.", "Log Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            String oldValue = String.valueOf(userAction.getOldValue());
-            Tile tile = tiles[userAction.getRow()][userAction.getCol()];
-            currentBoard[userAction.getRow()][userAction.getCol()] = Integer.parseInt(oldValue);
-            if (Integer.parseInt(oldValue) == 0) {
-                tile.setText("");
-            } else {
-                tile.setText(oldValue);
+
+            PlaceNumberCommand command = new PlaceNumberCommand(0, 0, 0, 0, currentBoard, undoLog);
+            command.undo();
+
+            for (int r = 0; r < 9; r++) {
+                for (int c = 0; c < 9; c++) {
+                    int val = currentBoard[r][c];
+                    Tile tile = tiles[r][c];
+                    if (editable[r][c]) {
+                        if (val == 0) {
+                            tile.setText("");
+                        } else {
+                            tile.setText(String.valueOf(val));
+                        }
+                    }
+                }
             }
             paintTiles();
-            storageManager.saveCurrent(currentBoard);
+            controllerFacade.saveCurrent(currentBoard);
             if (zeros(currentBoard) == 5) {
                 solveBtn.setEnabled(true);
             } else {
                 solveBtn.setEnabled(false);
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_undoButtonActionPerformed
 
-    private void paintTiles(){
+    private void paintTiles() {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                if(editable[row][col]){
+                if (editable[row][col]) {
                     tiles[row][col].setBackground(Color.LIGHT_GRAY);
                 }
             }
@@ -374,49 +395,66 @@ public class MainFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Game is incomplete!", "Icomplete", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Game current = new Game(currentBoard);
-        String result = sudokuController.verifyGame(current);
-        if (result.equals("VALID")) {
-            JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
 
+        boolean[][] result = controllerFacade.verifyGame(currentBoard);
+
+        boolean allValid = true;
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (!result[r][c]) {
+                    allValid = false;
+                }
+            }
+        }
+        if (allValid) {
+            JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over",
+                    JOptionPane.INFORMATION_MESSAGE);
         } else {
-            String[] tokens = result.split(",");
-            int[] indicies = new int[tokens.length];
-            for (int i = 0; i < tokens.length; i++) {
-                indicies[i] = Integer.parseInt(tokens[i]);
+            for (int r = 0; r < 9; r++) {
+                for (int c = 0; c < 9; c++) {
+                    if (!result[r][c] && editable[r][c]) {
+                        tiles[r][c].setBackground(Color.decode("#fa776e"));
+                    }
+                }
             }
-            markWrongTiles(indicies);
         }
-    }//GEN-LAST:event_verifyBtnActionPerformed
-    private void markWrongTiles(int[] indicies) {
-        for (int index : indicies) {
-            // Calculate the row and column from the 1D index
-            int row = index / 9;
-            int col = index % 9;
 
-            // Check if the tile is editable
-            if (editable[row][col]) {
-                Tile tile = tiles[row][col];
-                tile.setBackground(Color.decode("#fa776e")); // Mark the tile background as red
-            }
-        }
-    }
+    }//GEN-LAST:event_verifyBtnActionPerformed
+
 
     private void solveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_solveBtnActionPerformed
-        Verifier verifier = new Verifier();
-        Game game = new Game(currentBoard);
-        SudokuSolver solver = new SudokuSolver(game, verifier);
-        int[] solution = solver.solve();
-        if (solution != null) {
-            setSolution(solution);
-            JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            int[][] solution = controllerFacade.solveGame(currentBoard);
+            if (solution != null) {
+                for (int[] move : solution) {
+                    int r = move[0];
+                    int c = move[1];
+                    int val = move[2];
+                    currentBoard[r][c] = val;
+                }
 
-        } else {
-            EndGame();
-            JOptionPane.showMessageDialog(this, "No valid solution found for current board!", "Game Over", JOptionPane.ERROR_MESSAGE);
-
+                for (int r = 0; r < 9; r++) {
+                    for (int c = 0; c < 9; c++) {
+                        if (editable[r][c]) {
+                            int v = currentBoard[r][c];
+                            if (v != 0) {
+                                tiles[r][c].setText(String.valueOf(v));
+                            }
+                            tiles[r][c].setBackground(Color.decode("#95edad"));
+                        }
+                    }
+                }
+                JOptionPane.showMessageDialog(this, "Game Solved! No further actions are allowed.", "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
+                EndGame();
+            } else {
+                EndGame();
+                JOptionPane.showMessageDialog(this, "No valid solution found for current board!", "Game Over",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }//GEN-LAST:event_solveBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
@@ -432,39 +470,22 @@ public class MainFrame extends javax.swing.JFrame {
         startupFrame.setVisible(true);
     }//GEN-LAST:event_backBtnActionPerformed
 
-    private void setSolution(int[] solution) {
-        int solutionIdx = 0;
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                if (editable[r][c] && currentBoard[r][c] == 0) {
-                    currentBoard[r][c] = solution[solutionIdx++];
-                    Tile tile = tiles[r][c];
-                    tile.setText(String.valueOf(currentBoard[r][c]));
-                    tile.setBackground(Color.decode("#95edad"));
-                }
-            }
-        }
-        EndGame();
-    }
-
     private void EndGame() {
         for (Component comp : keyPadPanel.getComponents()) {
             if (comp instanceof JToggleButton) {
                 JToggleButton btn = (JToggleButton) comp;
-                btn.setEnabled(false);  // Disable each keypad button
+                btn.setEnabled(false);
                 btn.setSelected(false);
                 buttonSelected = null;
             }
         }
 
-        // Disable all action buttons
         solveBtn.setEnabled(false);
         undoButton.setEnabled(false);
-        verifyBtn.setEnabled(false);  // Disable verify button
+        verifyBtn.setEnabled(false);
 
         try {
-            // Assuming storageManager.deleteCurrent() is the method to delete the current game
-            storageManager.deleteCurrent();
+            controllerFacade.deleteCurrent();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error deleting the current game from storage.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -509,7 +530,7 @@ public class MainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new MainFrame(DifficultyEnum.EASY, "").setVisible(true);
+                    new MainFrame('E', "").setVisible(true);
                 } catch (NotFoundException ex) {
                     ex.printStackTrace();
                 } catch (SolutionInvalidException ex) {

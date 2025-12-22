@@ -12,20 +12,15 @@ import java.util.List;
  */
 public class Verifier {
 
-    private int[][] board;
-    private VerificationResult result;
-
     public VerificationResult verify(int[][] board) {
-        result = new VerificationResult();
-        this.board = board;
+        VerificationResult result = new VerificationResult();
         boolean hasZero = false;
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
                 if (board[row][col] == 0) {
                     hasZero = true;
                 }
-
-                checkDuplicates(row, col, board[row][col]);
+                checkDuplicates(board, result, row, col, board[row][col]);
             }
         }
 
@@ -39,22 +34,18 @@ public class Verifier {
         return result;
     }
 
-
-    public VerificationResult verify(int[][] board, List<int[]> emptyCells, int[] permutation) {
-        result = new VerificationResult();
-        this.board = board;
-
+    public VerificationResult verify(int[][] board, java.util.List<int[]> emptyCells, int[] permutation) {
+        VerificationResult result = new VerificationResult();
 
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                int value = getValue(row, col, emptyCells, permutation);
+                int value = getValue(board, row, col, emptyCells, permutation);
 
                 if (value == 0) {
-
                     result.setState(State.INCOMPLETE);
                 }
 
-                checkDuplicatesVirtual(row, col, value, emptyCells, permutation);
+                checkDuplicatesVirtual(board, result, row, col, value, emptyCells, permutation);
             }
         }
 
@@ -66,7 +57,7 @@ public class Verifier {
         return result;
     }
 
-    private int getValue(int r, int c, List<int[]> emptyCells, int[] permutation) {
+    private int getValue(int[][] board, int r, int c, java.util.List<int[]> emptyCells, int[] permutation) {
         for (int i = 0; i < emptyCells.size(); i++) {
             int[] cell = emptyCells.get(i);
             if (cell[0] == r && cell[1] == c) {
@@ -76,7 +67,7 @@ public class Verifier {
         return board[r][c];
     }
 
-    private void checkDuplicates(int row, int col, int value) {
+    private void checkDuplicates(int[][] board, VerificationResult result, int row, int col, int value) {
         if (value == 0)
             return;
 
@@ -102,21 +93,19 @@ public class Verifier {
         for (int r = boxRowStart; r < boxRowStart + 3; r++) {
             for (int c = boxColStart; c < boxColStart + 3; c++) {
                 if ((r != row || c != col) && board[r][c] == value) {
-
+                    //
                 }
             }
         }
-
     }
 
-    private void checkDuplicatesVirtual(int row, int col, int value,List<int[]> emptyCells,
-            int[] permutation) {
+    private void checkDuplicatesVirtual(int[][] board, VerificationResult result, int row, int col, int value,
+            java.util.List<int[]> emptyCells, int[] permutation) {
         if (value == 0)
             return;
 
-
         for (int c = col + 1; c < 9; c++) {
-            int otherVal = getValue(row, c, emptyCells, permutation);
+            int otherVal = getValue(board, row, c, emptyCells, permutation);
             if (otherVal == value) {
                 result.addDuplicatePosition(row * 9 + col);
                 result.addDuplicatePosition(row * 9 + c);
@@ -124,7 +113,7 @@ public class Verifier {
         }
 
         for (int r = row + 1; r < 9; r++) {
-            int otherVal = getValue(r, col, emptyCells, permutation);
+            int otherVal = getValue(board, r, col, emptyCells, permutation);
             if (otherVal == value) {
                 result.addDuplicatePosition(row * 9 + col);
                 result.addDuplicatePosition(r * 9 + col);
@@ -135,9 +124,8 @@ public class Verifier {
         int boxColStart = (col / 3) * 3;
         for (int r = boxRowStart; r < boxRowStart + 3; r++) {
             for (int c = boxColStart; c < boxColStart + 3; c++) {
-
                 if (r > row || (r == row && c > col)) {
-                    int otherVal = getValue(r, c, emptyCells, permutation);
+                    int otherVal = getValue(board, r, c, emptyCells, permutation);
                     if (otherVal == value) {
                         result.addDuplicatePosition(row * 9 + col);
                         result.addDuplicatePosition(r * 9 + c);

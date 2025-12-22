@@ -21,10 +21,10 @@ public class ControllerFacade implements Controllable {
     private final StorageManager storageManager;
     private final GameGenerator gameGenerator;
 
-    public ControllerFacade(Viewable controller) {
+    public ControllerFacade() {
         storageManager = new StorageManager("");
         gameGenerator = new GameGenerator();
-        this.controller = controller;
+        controller = new SudokuController(storageManager);
     }
 
     //storage
@@ -68,11 +68,14 @@ public class ControllerFacade implements Controllable {
         return storageManager.hasDifficultyGames();
     }
 
+    public void deleteCurrent() throws IOException{
+        storageManager.deleteCurrent();
+    }
+    
     //generator
     public Game generate(Game solved, int removeCount) {
         return gameGenerator.generate(solved, removeCount);
     }
-
     //controller
     @Override
     public boolean[] getCatalog() {
@@ -89,6 +92,8 @@ public class ControllerFacade implements Controllable {
                 DifficultyEnum.MEDIUM;
             case 'H' ->
                 DifficultyEnum.HARD;
+            case 'I'->
+                DifficultyEnum.INCOMPLETE;
             default ->
                 throw new NotFoundException("Invalid difficulty");
         };

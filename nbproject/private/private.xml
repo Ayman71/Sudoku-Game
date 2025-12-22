@@ -18,6 +18,10 @@
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/NotFoundException.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameVerifier.java</file>
             <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/MainFrame.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/Command.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/PlaceNumberCommand.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Frontend/StartupFrame.java</file>
+            <file>file:/D:/GitHub/Sudoku-Game/src/Backend/GameObserver.java</file>
         </group>
     </open-files>
 </project-private>

@@ -5,8 +5,10 @@
 package Frontend;
 
 import Backend.Catalog;
+import Backend.ControllerFacade;
 import Backend.DifficultyEnum;
 import Backend.Game;
+import Backend.NotFoundException;
 import Backend.SolutionInvalidException;
 import Backend.State;
 import Backend.StorageManager;
@@ -27,23 +29,18 @@ import javax.swing.JOptionPane;
  */
 public class StartupFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form StartupFrame
-     */
-    SudokuController sudokuController;
-    StorageManager storageManager;
+
+    ControllerFacade controllerFacade;
     String sourcePath = "D:\\GitHub\\Sudoku-Game\\DefaultGame.csv";
 
     public StartupFrame() throws IOException, SolutionInvalidException {
         initComponents();
         this.setSize(500, 350);
         this.setLocationRelativeTo(null);
-        storageManager = new StorageManager("");
-        sudokuController = new SudokuController(storageManager);
+        controllerFacade = new ControllerFacade();
         buttonGroup1.add(easyRadio);
         buttonGroup1.add(mediumRadio);
         buttonGroup1.add(hardRadio);
-
         easyRadio.setSelected(true);
         
         start();
@@ -173,19 +170,19 @@ public class StartupFrame extends javax.swing.JFrame {
         Verifier verifier = new Verifier();
         Game source = null;
         try {
-            source = storageManager.loadSourceGameFromPath(sourcePath);
+            source = controllerFacade.loadSourceGameFromPath(sourcePath);
         } catch (Exception e) {
             sourcePath = chooseSourcePath();
         }
         try {
-            source = storageManager.loadSourceGameFromPath(sourcePath);
+            source = controllerFacade.loadSourceGameFromPath(sourcePath);
         } catch (IOException ex) {
             Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         VerificationResult result = verifier.verify(source.getBoard());
         if (result.getState() == State.VALID) {
             try {
-                sudokuController.driveGames(source);
+                controllerFacade.driveGames(sourcePath);
                 newGameBtn.setEnabled(true);
             } catch (SolutionInvalidException ex) {
                 Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -199,18 +196,20 @@ public class StartupFrame extends javax.swing.JFrame {
 
     private void continueGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueGameBtnActionPerformed
         try {
-            MainFrame mainFrame = new MainFrame(DifficultyEnum.INCOMPLETE, sourcePath);
+            MainFrame mainFrame = new MainFrame('I', sourcePath);
             this.setVisible(false);
             mainFrame.setVisible(true);
         } catch (SolutionInvalidException ex) {
             Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotFoundException ex) {
+            Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_continueGameBtnActionPerformed
 
     private void newGameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameBtnActionPerformed
-        DifficultyEnum difficultyEnum;
+        char difficulty;
         int choice = 0;
         if (continueGameBtn.isEnabled()) {
             choice = JOptionPane.showConfirmDialog(
@@ -223,42 +222,37 @@ public class StartupFrame extends javax.swing.JFrame {
         }
         if (choice == JOptionPane.YES_OPTION) {
             if (easyRadio.isSelected()) {
-                difficultyEnum = DifficultyEnum.EASY;
+                difficulty = 'E';
             } else if (mediumRadio.isSelected()) {
-                difficultyEnum = DifficultyEnum.MEDIUM;
+                difficulty = 'M';
             } else {
-                difficultyEnum = DifficultyEnum.HARD;
+                difficulty = 'H';
             }
             try {
-                MainFrame mainFrame = new MainFrame(difficultyEnum, sourcePath);
+                MainFrame mainFrame = new MainFrame(difficulty, sourcePath);
                 this.setVisible(false);
                 mainFrame.setVisible(true);
             } catch (SolutionInvalidException ex) {
                 Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NotFoundException ex) {
+                Logger.getLogger(StartupFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-
     }//GEN-LAST:event_newGameBtnActionPerformed
+    
     private void start() throws IOException, SolutionInvalidException {
-        Game source = storageManager.loadSourceGameFromPath(sourcePath);
-        sudokuController.driveGames(source);
-        Catalog catalog = sudokuController.getCatalog();
-        if (catalog.hasCurrent()) {
-            System.out.println("has incomplete");
+        controllerFacade.driveGames(sourcePath);
+        
+        if (controllerFacade.hasCurrentGame()) {
             continueGameBtn.setEnabled(true);
             
-        }if (catalog.allModesExist()) {
-            System.out.println("has modes");
+        }if (controllerFacade.hasDifficultyGames()) {
             newGameBtn.setEnabled(true);
         }
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         try {
             // Set FlatLaf Dark look and feel
