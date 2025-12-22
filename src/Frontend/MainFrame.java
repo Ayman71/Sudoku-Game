@@ -168,6 +168,7 @@ public class MainFrame extends javax.swing.JFrame implements GameObserver{
                                 try {
                                     command.execute();
                                     controllerFacade.saveCurrent(currentBoard);
+                                    controllerFacade.updateGameState(currentBoard);
                                 } catch (Exception ex) {
                                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                                 }
